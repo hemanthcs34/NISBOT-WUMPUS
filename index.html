@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nisbot's Repair</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="start-screen" class="splash-screen">
+        <div class="splash-content">
+            <!-- This now points to your angry robot image -->
+            <img src="assests/angry-robot.avif" alt="Angry Robot" class="splash-robot">
+            <h1>Nisbot is Hostile!</h1>
+            <p>It has malfunctioned. You must collect the components to repair it.</p>
+            <button id="start-game-button">Start Mission</button>
+        </div>
+    </div>
+
+    <div id="win-screen" class="splash-screen hidden">
+        <div class="splash-content">
+            <!-- This now points to your happy robot image -->
+            <img src="assests/happy-robot.jpg" alt="Happy Robot" class="splash-robot">
+            <div id="win-message"></div>
+            <button id="play-again-button">Play Again</button>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <header>
+            <h1>Nisbot's Repair</h1>
+            <div class="stats">
+                <div id="score-display">Score: 0</div>
+                <div id="chips-display">Chips: 0 / 8</div>
+            </div>
+        </header>
+
+        <main>
+            <div id="game-board"></div>
+        </main>
+
+        <footer>
+            <div id="message-display">Welcome! Find the chips to repair Nisbot.</div>
+            <div id="sensory-display"></div>
+        </footer>
+
+        <div id="game-over-screen" class="hidden">
+            <div id="game-over-message"></div>
+            <button id="restart-button">Play Again</button>
+        </div>
+
+        <div class="instructions">
+            <h2>How to Play</h2>
+            <p><strong>Objective:</strong> Collect all 8 chips (⚙️) and repair Nisbot (🤖).</p>
+            <p><strong>Controls:</strong></p>
+            <ul>
+                <li><strong>Arrow Keys:</strong> Move your repair-person (🧑‍🔧).</li>
+                <li><strong>'E' Key:</strong> Pick up a chip or repair Nisbot.</li>
+            </ul>
+            <p><strong>Hazards:</strong> Avoid pits (⚫) and do not approach Nisbot before you have all 8 chips!</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
