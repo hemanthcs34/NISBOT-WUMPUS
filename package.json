@@ -1,0 +1,21 @@
+{
+  "name": "nisbot-wumpus",
+  "version": "1.0.0",
+  "description": "Nisbot's Repair is a grid-based browser game where you must collect components to repair a malfunctioning robot named Nisbot. Avoid hazards, gather chips, and restore Nisbot to its friendly state!",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hemanthcs34/NISBOT-WUMPUS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hemanthcs34/NISBOT-WUMPUS/issues"
+  },
+  "homepage": "https://github.com/hemanthcs34/NISBOT-WUMPUS#readme"
+}
