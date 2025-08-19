@@ -38,9 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
         score = 100;
         chipsCollected = 0;
         gameOver = false;
+        moveCooldown = false;
 
         // Hide game over screen
         gameOverScreen.classList.add('hidden');
+
+        // Impossible placement check
+        const totalItems = 1 + 1 + NUM_PITS + NUM_CHIPS; // player, nisbot, pits, chips
+        if (totalItems > GRID_SIZE * GRID_SIZE) {
+            alert('Grid too small for all items! Please reduce pits/chips or increase grid size.');
+            return;
+        }
 
         // Create grid
         for (let y = 0; y < GRID_SIZE; y++) {
@@ -64,10 +72,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function getUniquePosition() {
             let x, y, posKey;
+            let attempts = 0;
             do {
                 x = Math.floor(Math.random() * GRID_SIZE);
                 y = Math.floor(Math.random() * GRID_SIZE);
                 posKey = `${x},${y}`;
+                attempts++;
+                if (attempts > 1000) {
+                    alert('Failed to place all items. Try again!');
+                    throw new Error('Placement failed');
+                }
             } while (occupiedPositions.has(posKey));
             occupiedPositions.add(posKey);
             return { x, y };
@@ -110,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         render();
         updateMessages("Welcome! Find all 8 chips to repair Nisbot.", true);
     }
+    let moveCooldown = false;
 
     function isAdjacent(pos1, pos2) {
         return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y) === 1;
@@ -168,18 +183,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function movePlayer(dx, dy) {
-        if (gameOver) return;
+        if (gameOver || moveCooldown) return;
 
         const newX = playerPos.x + dx;
         const newY = playerPos.y + dy;
 
-        if (newX >= 0 && newX < GRID_SIZE && newY >= 0 && newY < GRID_SIZE) {
-            playerPos.x = newX;
-            playerPos.y = newY;
-            score -= 1;
-            grid[newY][newX].visited = true;
-            checkCurrentTile();
-            render();
+        // Move cooldown: prevent rapid moves
+        moveCooldown = true;
+        setTimeout(() => { moveCooldown = false; }, 150); // 150ms cooldown
+
+        if (newX < 0 || newX >= GRID_SIZE || newY < 0 || newY >= GRID_SIZE) {
+            updateMessages("You can't move off the edge!", false);
+            return;
+        }
+
+        playerPos.x = newX;
+        playerPos.y = newY;
+        score -= 1;
+        grid[newY][newX].visited = true;
+        checkCurrentTile();
+        render();
+
+        // Stuck state detection: check if all adjacent tiles are pits or out of bounds
+        if (!gameOver) {
+            let stuck = true;
+            const directions = [
+                {dx: 0, dy: -1},
+                {dx: 0, dy: 1},
+                {dx: -1, dy: 0},
+                {dx: 1, dy: 0}
+            ];
+            for (const dir of directions) {
+                const tx = playerPos.x + dir.dx;
+                const ty = playerPos.y + dir.dy;
+                if (tx >= 0 && tx < GRID_SIZE && ty >= 0 && ty < GRID_SIZE) {
+                    if (!grid[ty][tx].hasPit) {
+                        stuck = false;
+                        break;
+                    }
+                }
+            }
+            if (stuck) {
+                endGame(false, "You are surrounded by pits and cannot move! Game Over.");
+            }
         }
     }
 
@@ -230,6 +276,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 score += 50;
                 updateMessages(`Chip collected! You now have ${chipsCollected}.`);
                 render();
+                // Notify when all chips collected
+                if (chipsCollected === NUM_CHIPS) {
+                    updateMessages("All chips collected! Find Nisbot to repair.");
+                }
             }
             return;
         }
