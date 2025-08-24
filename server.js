@@ -1,12 +1,12 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
-require('dotenv').config(); // To use environment variables from .env file
+const cors = require('cors'); // Import the cors package
+require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 8000; // You can run on port 8000
+const port = process.env.PORT || 8000;
 
 // --- Database Connection ---
-// Make sure you have a .env file in your project root with your MONGO_URI
 const uri = process.env.MONGO_URI;
 if (!uri) {
     throw new Error('MONGO_URI not found in .env file. Please add it.');
@@ -17,19 +17,17 @@ let db;
 async function connectDB() {
     try {
         await client.connect();
-        // Connecting to your specific database
         db = client.db('ieee-game');
         console.log('Successfully connected to MongoDB Atlas database: ieee-game!');
     } catch (err) {
         console.error('Failed to connect to MongoDB', err);
-        process.exit(1); // Exit if we can't connect to the DB
+        process.exit(1);
     }
 }
 
 // --- Middleware ---
-// Serve static files (your game) from the 'public' directory
+app.use(cors()); // Use CORS to allow cross-origin requests
 app.use(express.static('public'));
-// Parse JSON bodies for POST requests (to submit scores)
 app.use(express.json());
 
 // --- API Routes ---
@@ -41,9 +39,7 @@ app.post('/api/auth', async (req, res) => {
         if (!name) {
             return res.status(400).json({ message: 'Name is required.' });
         }
-
         const participant = await db.collection('participant').findOne({ name: name });
-
         if (participant) {
             res.status(200).json({ message: 'Authentication successful.' });
         } else {
@@ -54,7 +50,6 @@ app.post('/api/auth', async (req, res) => {
         res.status(500).json({ message: 'Server error during authentication.' });
     }
 });
-// --- API Routes ---
 
 // GET /api/leaderboard - Fetches top 10 scores from the 'participant' collection
 app.get('/api/leaderboard', async (req, res) => {
@@ -75,16 +70,13 @@ app.get('/api/leaderboard', async (req, res) => {
 app.post('/api/leaderboard', async (req, res) => {
     try {
         const { name, score } = req.body;
-
         if (!name || typeof score !== 'number') {
             return res.status(400).json({ message: 'Invalid name or score provided.' });
         }
-
         const result = await db.collection('participant').findOneAndUpdate(
             { name: name },
             { $set: { totalscore: score } }
         );
-
         if (result) {
             res.status(200).json({ message: 'Score updated successfully!' });
         } else {

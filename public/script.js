@@ -2,10 +2,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Authentication Check ---
     const loggedInUser = sessionStorage.getItem('nisbotUser');
     if (!loggedInUser) {
-        // If no user is logged in, redirect to the authentication page.
         window.location.href = 'auth.html';
-        return; // Stop the rest of the script from running.
+        return;
     }
+
+    // IMPORTANT: Replace this with your actual Render backend URL
+    const API_BASE_URL = 'https://your-render-backend-url.onrender.com';
 
     // --- Game Constants ---
     const GRID_SIZE = 10;
@@ -41,7 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Core Game Logic ---
 
     function initializeGame() {
-        // Reset state
         grid = [];
         playerPos = { x: 0, y: 0 };
         nisbotPos = {};
@@ -52,14 +53,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         gameOver = false;
         moveCooldown = false;
 
-        // Impossible placement check
-        const totalItems = 1 + 1 + NUM_PITS + NUM_CHIPS; // player, nisbot, pits, chips
+        const totalItems = 1 + 1 + NUM_PITS + NUM_CHIPS;
         if (totalItems > GRID_SIZE * GRID_SIZE) {
             alert('Grid too small for all items! Please reduce pits/chips or increase grid size.');
             return;
         }
 
-        // Create grid
         for (let y = 0; y < GRID_SIZE; y++) {
             grid[y] = [];
             for (let x = 0; x < GRID_SIZE; x++) {
@@ -73,10 +72,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        // Place player
         grid[playerPos.y][playerPos.x].visited = true;
 
-        // Generate unique positions for items
         const occupiedPositions = new Set(['0,0']);
 
         function getUniquePosition() {
@@ -96,7 +93,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             return { x, y };
         }
 
-        // Place Nisbot, Pits, and Chips
         nisbotPos = getUniquePosition();
         grid[nisbotPos.y][nisbotPos.x].hasNisbot = true;
 
@@ -112,7 +108,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             grid[pos.y][pos.x].hasChip = true;
         }
 
-        // Add sensory cues for hazards
         for (let y = 0; y < GRID_SIZE; y++) {
             for (let x = 0; x < GRID_SIZE; x++) {
                 if (isAdjacent({x, y}, nisbotPos)) grid[y][x].cues.add('whirring');
@@ -124,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         render();
         updateMessages("Welcome! Find all 8 chips to repair Nisbot.", true);
-        saveGameState(); // Save the initial state of the new game
+        saveGameState();
     }
 
     function isAdjacent(pos1, pos2) {
@@ -202,7 +197,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         grid[newY][newX].visited = true;
         checkCurrentTile();
         render();
-        saveGameState(); // Save state after every move
+        saveGameState();
 
         if (!gameOver) {
             let stuck = true;
@@ -283,7 +278,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         gameOver = true;
         document.removeEventListener('keydown', handleKeyDown);
 
-        sessionStorage.removeItem('nisbotGameState'); // Clear the state on game end
+        sessionStorage.removeItem('nisbotGameState');
         for (let y = 0; y < GRID_SIZE; y++) {
             for (let x = 0; x < GRID_SIZE; x++) {
                 grid[y][x].visited = true;
@@ -294,7 +289,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         gameContainer.classList.add('hidden');
 
         if (isWin) {
-            // On win, automatically submit the score
             submitScore(score);
             winMessage.innerHTML = `<h2>Repair Complete!</h2><p>${message}</p><p>Final Score: ${score}</p>`;
             winScreen.classList.remove('hidden');
@@ -359,7 +353,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const statusP = document.getElementById('submit-status');
 
         try {
-            const response = await fetch('/api/leaderboard', {
+            const response = await fetch(`${API_BASE_URL}/api/leaderboard`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: name, score: scoreValue })
@@ -380,7 +374,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- Game Initialization ---
 
-    // Hide all splash screens and show the game container
     startScreen.classList.add('hidden');
     winScreen.classList.add('hidden');
     gameOverScreen.classList.add('hidden');
@@ -389,13 +382,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('keydown', handleKeyDown);
 
     if (loadGameState() && !gameOver) {
-        // A game is in progress, restore it
         console.log("Saved game state found. Restoring game.");
         render();
         updateMessages("Welcome back! Your game was restored.", true);
     } else {
-        // No saved game, or game was over. Start a new game.
         console.log("No saved game. Starting new game.");
-        initializeGame(); // This will create and save the new game state
+        initializeGame();
     }
 });

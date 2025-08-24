@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // IMPORTANT: Replace this with your actual Render backend URL
+    const API_BASE_URL = 'https://your-render-backend-url.onrender.com';
+
     const loginButton = document.getElementById('login-button');
     const nameInput = document.getElementById('participant-name');
     const statusP = document.getElementById('auth-status');
 
-    // Clear any previous session on login page load to ensure a fresh start.
     sessionStorage.removeItem('nisbotUser');
     sessionStorage.removeItem('nisbotGameState');
 
@@ -19,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         statusP.style.color = '#e0e0e0';
 
         try {
-            const response = await fetch('/api/auth', {
+            const response = await fetch(`${API_BASE_URL}/api/auth`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: name })

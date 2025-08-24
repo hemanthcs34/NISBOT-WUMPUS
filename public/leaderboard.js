@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    // IMPORTANT: Replace this with your actual Render backend URL
+    const API_BASE_URL = 'https://your-render-backend-url.onrender.com';
+
     const list = document.getElementById('leaderboard-list');
     const loading = document.getElementById('leaderboard-loading');
     
     try {
-        // Fetch scores from our backend API
-        const response = await fetch('/api/leaderboard');
+        const response = await fetch(`${API_BASE_URL}/api/leaderboard`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -14,10 +16,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (scores.length === 0) {
             loading.textContent = 'No scores yet. Be the first!';
         } else {
-            loading.style.display = 'none'; // Hide "Loading..." text
+            loading.style.display = 'none';
             scores.forEach(player => {
                 const li = document.createElement('li');
-                // Use the correct field names: name and totalscore
                 li.textContent = `${player.name} - ${player.totalscore}`;
                 list.appendChild(li);
             });
