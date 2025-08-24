@@ -1,0 +1,218 @@
+/* General Body and Font Styling */
+body {
+    font-family: 'Roboto Mono', monospace;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-size: 16px;
+}
+
+/* Utility Class */
+.hidden {
+    display: none !important;
+}
+
+/* Splash Screens (Start, Win, Game Over) */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 100;
+}
+
+.splash-content {
+    background: #2c2c2c;
+    padding: 40px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    max-width: 500px;
+}
+
+.splash-robot {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #00ffdd;
+    margin-bottom: 20px;
+}
+
+h1, h2, h3 {
+    color: #00ffdd;
+}
+
+button, a.button {
+    background-color: #00ffdd;
+    color: #1a1a1a;
+    border: none;
+    padding: 12px 25px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+    transition: background-color 0.3s, transform 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+button:hover, a.button:hover {
+    background-color: #00b39b;
+    transform: scale(1.05);
+}
+
+#leaderboard-button {
+    background-color: #444;
+    color: #e0e0e0;
+    margin-left: 10px;
+}
+
+#leaderboard-button:hover {
+    background-color: #555;
+}
+
+
+/* Game Container and Layout */
+.game-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    width: 100%;
+    justify-content: center;
+}
+
+header, footer {
+    width: 100%;
+    text-align: center;
+    background: #252525;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 1.2em;
+}
+
+main {
+    flex-basis: 620px; /* Accommodate 10x10 grid of 60px cells + padding */
+}
+
+/* Game Board */
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(10, 60px);
+    grid-template-rows: repeat(10, 60px);
+    gap: 2px;
+    background-color: #111;
+    border: 2px solid #00ffdd;
+    padding: 5px;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    background-color: #333;
+    font-size: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.cell.visited {
+    background-color: #4d4d4d;
+}
+
+.cell.player-location {
+    background-color: #5f5f5f;
+}
+
+.sensory-cue {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 0.5em;
+}
+
+/* Instructions Side Panel */
+.instructions {
+    flex-basis: 300px;
+    background: #252525;
+    padding: 20px;
+    border-radius: 8px;
+    align-self: flex-start;
+}
+
+/* Score Submission Form */
+.leaderboard-submit {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+}
+
+.leaderboard-submit input {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background: #333;
+    color: #e0e0e0;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.leaderboard-submit button {
+    margin-top: 0;
+}
+
+/* Leaderboard Page Specific Styles */
+.leaderboard-page {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.leaderboard-content {
+    background: #2c2c2c;
+    padding: 40px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    width: 90%;
+    max-width: 600px;
+}
+
+.leaderboard-content ol {
+    list-style-type: decimal;
+    padding-left: 20px;
+    text-align: left;
+}
+
+.leaderboard-content li {
+    padding: 8px 0;
+    border-bottom: 1px solid #444;
+    font-size: 1.1em;
+}
+
+.leaderboard-content li:last-child {
+    border-bottom: none;
+}
