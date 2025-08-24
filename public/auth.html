@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Leaderboard</title>
+    <title>Nisbot Repair - Authentication</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="leaderboard-page">
-        <div class="leaderboard-content">
-            <h1>Global Leaderboard</h1>
-            <div id="leaderboard-loading">Loading...</div>
-            <ol id="leaderboard-list"></ol>
-            <a href="auth.html" class="button">Logout</a>
+    <div class="auth-page">
+        <div class="auth-content">
+            <h1>Participant Login</h1>
+            <p>Enter your registered name to begin the mission.</p>
+            <input type="text" id="participant-name" placeholder="Enter your name" autocomplete="off" autofocus>
+            <button id="login-button">Login</button>
+            <p id="auth-status"></p>
         </div>
     </div>
-    <script src="leaderboard.js"></script>
+    <script src="auth.js"></script>
 </body>
 </html>

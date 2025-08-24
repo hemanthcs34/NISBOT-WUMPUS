@@ -1,4 +1,12 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // --- Authentication Check ---
+    const loggedInUser = sessionStorage.getItem('nisbotUser');
+    if (!loggedInUser) {
+        // If no user is logged in, redirect to the authentication page.
+        window.location.href = 'auth.html';
+        return; // Stop the rest of the script from running.
+    }
+
     // --- Game Constants ---
     const GRID_SIZE = 10;
     const NUM_CHIPS = 8;
@@ -16,11 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameOverScreen = document.getElementById('game-over-screen');
     const gameContainer = document.querySelector('.game-container');
 
-    const startGameButton = document.getElementById('start-game-button');
-    const playAgainButton = document.getElementById('play-again-button');
-    const restartButton = document.getElementById('restart-button');
-    const submitScoreButton = document.getElementById('submit-score-button');
-    
     const winMessage = document.getElementById('win-message');
     const gameOverMessage = document.getElementById('game-over-message');
 
@@ -121,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         render();
         updateMessages("Welcome! Find all 8 chips to repair Nisbot.", true);
+        saveGameState(); // Save the initial state of the new game
     }
 
     function isAdjacent(pos1, pos2) {
@@ -198,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         grid[newY][newX].visited = true;
         checkCurrentTile();
         render();
+        saveGameState(); // Save state after every move
 
         if (!gameOver) {
             let stuck = true;
@@ -245,8 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 score -= 50;
                 updateMessages("You need all 8 chips to repair Nisbot!");
+                render();
+                saveGameState();
             }
-            render();
             return;
         }
 
@@ -262,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateMessages("All chips collected! Find Nisbot to repair.");
                 }
                 render();
+                saveGameState();
             }
             return;
         }
@@ -269,12 +276,14 @@ document.addEventListener('DOMContentLoaded', () => {
         score -= 50;
         updateMessages("There is nothing to do here.");
         render();
+        saveGameState();
     }
 
     function endGame(isWin, message) {
         gameOver = true;
         document.removeEventListener('keydown', handleKeyDown);
 
+        sessionStorage.removeItem('nisbotGameState'); // Clear the state on game end
         for (let y = 0; y < GRID_SIZE; y++) {
             for (let x = 0; x < GRID_SIZE; x++) {
                 grid[y][x].visited = true;
@@ -285,15 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
         gameContainer.classList.add('hidden');
 
         if (isWin) {
+            // On win, automatically submit the score
+            submitScore(score);
             winMessage.innerHTML = `<h2>Repair Complete!</h2><p>${message}</p><p>Final Score: ${score}</p>`;
             winScreen.classList.remove('hidden');
-            // Reset the submit form for the next round
-            const statusP = document.getElementById('submit-status');
-            const nameInput = document.getElementById('player-name');
-            statusP.textContent = '';
-            statusP.style.color = 'black';
-            submitScoreButton.disabled = false;
-            nameInput.value = '';
         } else {
             gameOverMessage.innerHTML = `<h2>Mission Failed!</h2><p>${message}</p><p>Final Score: ${score}</p>`;
             gameOverScreen.classList.remove('hidden');
@@ -311,61 +315,87 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function startGame() {
-        startScreen.classList.add('hidden');
-        winScreen.classList.add('hidden');
-        gameOverScreen.classList.add('hidden');
-        gameContainer.classList.remove('hidden');
+    // --- Session Storage & Score Submission ---
 
-        initializeGame();
-        document.removeEventListener('keydown', handleKeyDown);
-        document.addEventListener('keydown', handleKeyDown);
+    function saveGameState() {
+        const stateToSave = {
+            grid: grid.map(row => row.map(cell => ({ ...cell, cues: Array.from(cell.cues) }))),
+            playerPos,
+            nisbotPos,
+            pits,
+            chips,
+            score,
+            chipsCollected,
+            gameOver
+        };
+        sessionStorage.setItem('nisbotGameState', JSON.stringify(stateToSave));
     }
 
-    async function submitScore(name, scoreValue) {
+    function loadGameState() {
+        const savedStateJSON = sessionStorage.getItem('nisbotGameState');
+        if (!savedStateJSON) return false;
+
+        const savedState = JSON.parse(savedStateJSON);
+
+        grid = savedState.grid.map(row => row.map(cell => ({ ...cell, cues: new Set(cell.cues) })));
+        playerPos = savedState.playerPos;
+        nisbotPos = savedState.nisbotPos;
+        pits = savedState.pits;
+        chips = savedState.chips;
+        score = savedState.score;
+        chipsCollected = savedState.chipsCollected;
+        gameOver = savedState.gameOver;
+
+        return true;
+    }
+
+    async function submitScore(scoreValue) {
+        const name = sessionStorage.getItem('nisbotUser');
+        if (!name) {
+            console.error("CRITICAL: No user logged in, cannot submit score.");
+            return;
+        }
+
         const statusP = document.getElementById('submit-status');
-        statusP.textContent = 'Submitting...';
-        submitScoreButton.disabled = true;
 
         try {
             const response = await fetch('/api/leaderboard', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: name, score: scoreValue }),
+                body: JSON.stringify({ name: name, score: scoreValue })
             });
 
             if (!response.ok) throw new Error('Submission failed');
 
             const result = await response.json();
-            statusP.textContent = result.message;
+            statusP.textContent = 'Score updated successfully!';
             statusP.style.color = 'green';
 
         } catch (error) {
             console.error('Error submitting score:', error);
-            statusP.textContent = 'Submission failed. Please try again.';
+            statusP.textContent = 'Could not update score.';
             statusP.style.color = 'red';
-            submitScoreButton.disabled = false;
         }
     }
 
-    // --- Initial Setup and Event Listeners ---
+    // --- Game Initialization ---
 
-    startGameButton.addEventListener('click', startGame);
-    restartButton.addEventListener('click', startGame);
-    playAgainButton.addEventListener('click', startGame);
+    // Hide all splash screens and show the game container
+    startScreen.classList.add('hidden');
+    winScreen.classList.add('hidden');
+    gameOverScreen.classList.add('hidden');
+    gameContainer.classList.remove('hidden');
 
-    submitScoreButton.addEventListener('click', () => {
-        const nameInput = document.getElementById('player-name');
-        const playerName = nameInput.value.trim();
-        
-        if (playerName) {
-            submitScore(playerName, score);
-        } else {
-            alert('Please enter your name!');
-        }
-    });
+    document.addEventListener('keydown', handleKeyDown);
 
-    // On initial load, show the start screen and fetch the leaderboard
-    gameContainer.classList.add('hidden');
-    startScreen.classList.remove('hidden');
+    if (loadGameState() && !gameOver) {
+        // A game is in progress, restore it
+        console.log("Saved game state found. Restoring game.");
+        render();
+        updateMessages("Welcome back! Your game was restored.", true);
+    } else {
+        // No saved game, or game was over. Start a new game.
+        console.log("No saved game. Starting new game.");
+        initializeGame(); // This will create and save the new game state
+    }
 });

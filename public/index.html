@@ -16,8 +16,6 @@
             <img src="assests/angry-robot.avif" alt="Angry Robot" class="splash-robot">
             <h1>Nisbot is Hostile!</h1>
             <p>It has malfunctioned. You must collect the components to repair it.</p>
-            <button id="start-game-button">Start Mission</button>
-            <a href="leaderboard.html" class="button" id="leaderboard-button">View Leaderboard</a>
         </div>
     </div>
 
@@ -26,21 +24,15 @@
         <div class="splash-content">
             <img src="assests/happy-robot.jpg" alt="Happy Robot" class="splash-robot">
             <div id="win-message"></div>
-            <button id="play-again-button">Play Again</button>
-            <div class="leaderboard-submit">
-                <h3>Add to Leaderboard</h3>
-                <input type="text" id="player-name" placeholder="Enter your name" maxlength="15">
-                <button id="submit-score-button">Submit Score</button>
-                <p id="submit-status"></p>
-            </div>
+            <p id="submit-status">Updating your score...</p>
+            <a href="leaderboard.html" class="button">View Leaderboard</a>
         </div>
     </div>
 
-    <!-- GAME OVER SCREEN (MOVED HERE FOR THE FIX) -->
     <div id="game-over-screen" class="splash-screen hidden">
         <div class="splash-content">
             <div id="game-over-message"></div>
-            <button id="restart-button">Play Again</button>
+            <a href="leaderboard.html" class="button">View Leaderboard</a>
         </div>
     </div>
 

@@ -1,7 +1,12 @@
 /* General Body and Font Styling */
 body {
     font-family: 'Roboto Mono', monospace;
-    background-color: #1a1a1a;
+    /* The background image you requested */
+    background-image: url('https://images.unsplash.com/photo-1519677100203-a0e668c97d44?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #1a1a1a; /* Fallback color */
     color: #e0e0e0;
     display: flex;
     justify-content: center;
@@ -16,7 +21,7 @@ body {
     display: none !important;
 }
 
-/* Splash Screens (Start, Win, Game Over) */
+/* Splash Screens & Modals */
 .splash-screen {
     position: fixed;
     top: 0;
@@ -31,11 +36,17 @@ body {
     z-index: 100;
 }
 
-.splash-content {
-    background: #2c2c2c;
+.splash-content, .auth-content, .leaderboard-content, .instructions, header, footer {
+    /* Semi-transparent background for readability */
+    background: rgba(26, 26, 26, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     padding: 40px;
     border-radius: 10px;
     border: 1px solid #444;
+}
+
+.splash-content, .auth-content, .leaderboard-content {
     max-width: 500px;
 }
 
@@ -73,21 +84,11 @@ button:hover, a.button:hover {
     transform: scale(1.05);
 }
 
-#leaderboard-button {
-    background-color: #444;
-    color: #e0e0e0;
-    margin-left: 10px;
-}
-
-#leaderboard-button:hover {
-    background-color: #555;
-}
-
-
 /* Game Container and Layout */
 .game-container {
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
     gap: 20px;
     padding: 20px;
     max-width: 1200px;
@@ -98,7 +99,6 @@ button:hover, a.button:hover {
 header, footer {
     width: 100%;
     text-align: center;
-    background: #252525;
     padding: 10px;
     border-radius: 8px;
 }
@@ -154,51 +154,9 @@ main {
 /* Instructions Side Panel */
 .instructions {
     flex-basis: 300px;
-    background: #252525;
     padding: 20px;
     border-radius: 8px;
     align-self: flex-start;
-}
-
-/* Score Submission Form */
-.leaderboard-submit {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #444;
-}
-
-.leaderboard-submit input {
-    width: 80%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #555;
-    background: #333;
-    color: #e0e0e0;
-    font-family: 'Roboto Mono', monospace;
-}
-
-.leaderboard-submit button {
-    margin-top: 0;
-}
-
-/* Leaderboard Page Specific Styles */
-.leaderboard-page {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.leaderboard-content {
-    background: #2c2c2c;
-    padding: 40px;
-    border-radius: 10px;
-    border: 1px solid #444;
-    width: 90%;
-    max-width: 600px;
 }
 
 .leaderboard-content ol {
@@ -215,4 +173,32 @@ main {
 
 .leaderboard-content li:last-child {
     border-bottom: none;
+}
+
+.auth-content input {
+    width: 80%;
+    padding: 12px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background: #333;
+    color: #e0e0e0;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+.auth-content button {
+    width: 85%;
+}
+
+#auth-status {
+    margin-top: 15px;
+    height: 20px;
+}
+
+#submit-status {
+    margin-top: 15px;
+    height: 20px;
 }

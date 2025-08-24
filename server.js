@@ -34,12 +34,34 @@ app.use(express.json());
 
 // --- API Routes ---
 
+// POST /api/auth - Checks if a participant exists
+app.post('/api/auth', async (req, res) => {
+    try {
+        const { name } = req.body;
+        if (!name) {
+            return res.status(400).json({ message: 'Name is required.' });
+        }
+
+        const participant = await db.collection('participant').findOne({ name: name });
+
+        if (participant) {
+            res.status(200).json({ message: 'Authentication successful.' });
+        } else {
+            res.status(404).json({ message: 'Participant not found. Please check your name.' });
+        }
+    } catch (err) {
+        console.error('Error during authentication:', err);
+        res.status(500).json({ message: 'Server error during authentication.' });
+    }
+});
+// --- API Routes ---
+
 // GET /api/leaderboard - Fetches top 10 scores from the 'participant' collection
 app.get('/api/leaderboard', async (req, res) => {
     try {
         const leaderboard = await db.collection('participant')
             .find()
-            .sort({ totalscore: -1 }) // Sorts by a field named 'totalscore'
+            .sort({ totalscore: -1 })
             .limit(10)
             .toArray();
         res.json(leaderboard);
@@ -49,7 +71,7 @@ app.get('/api/leaderboard', async (req, res) => {
     }
 });
 
-// POST /api/leaderboard - Submits a new score to the 'participant' collection
+// POST /api/leaderboard - Updates an existing participant's score
 app.post('/api/leaderboard', async (req, res) => {
     try {
         const { name, score } = req.body;
@@ -58,13 +80,16 @@ app.post('/api/leaderboard', async (req, res) => {
             return res.status(400).json({ message: 'Invalid name or score provided.' });
         }
 
-        const newScore = {
-            name: name.slice(0, 15), // Creates a field named 'name'
-            totalscore: score,       // Creates a field named 'totalscore'
-            createdAt: new Date(),
-        };
-        const result = await db.collection('participant').insertOne(newScore);
-        res.status(201).json({ message: 'Score submitted successfully!', insertedId: result.insertedId });
+        const result = await db.collection('participant').findOneAndUpdate(
+            { name: name },
+            { $set: { totalscore: score } }
+        );
+
+        if (result) {
+            res.status(200).json({ message: 'Score updated successfully!' });
+        } else {
+            res.status(404).json({ message: 'Could not find participant to update score.' });
+        }
     } catch (err) {
         console.error('Error submitting score:', err);
         res.status(500).json({ message: 'Error submitting score' });
