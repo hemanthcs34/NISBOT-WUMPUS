@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // IMPORTANT: Replace this with your actual Render backend URL
-    const API_BASE_URL = 'https://your-render-backend-url.onrender.com';
+    // The live URL for your Render backend
+    const API_BASE_URL = 'https://nisbot-wumpus.onrender.com';
 
     const loginButton = document.getElementById('login-button');
     const nameInput = document.getElementById('participant-name');
     const statusP = document.getElementById('auth-status');
 
+    // Clear any previous session on login page load to ensure a fresh start.
     sessionStorage.removeItem('nisbotUser');
     sessionStorage.removeItem('nisbotGameState');
 
