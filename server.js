@@ -39,7 +39,7 @@ app.post('/api/auth', async (req, res) => {
         if (!name) {
             return res.status(400).json({ message: 'Name is required.' });
         }
-        const participant = await db.collection('participant').findOne({ name: name });
+        const participant = await db.collection('participants').findOne({ name: name });
         if (participant) {
             res.status(200).json({ message: 'Authentication successful.' });
         } else {
@@ -54,7 +54,7 @@ app.post('/api/auth', async (req, res) => {
 // GET /api/leaderboard - Fetches top 10 scores from the 'participant' collection
 app.get('/api/leaderboard', async (req, res) => {
     try {
-        const leaderboard = await db.collection('participant')
+        const leaderboard = await db.collection('participants')
             .find()
             .sort({ totalscore: -1 })
             .limit(10)
@@ -73,7 +73,7 @@ app.post('/api/leaderboard', async (req, res) => {
         if (!name || typeof score !== 'number') {
             return res.status(400).json({ message: 'Invalid name or score provided.' });
         }
-        const result = await db.collection('participant').findOneAndUpdate(
+        const result = await db.collection('participants').findOneAndUpdate(
             { name: name },
             { $set: { totalscore: score } }
         );
