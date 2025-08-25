@@ -2,7 +2,7 @@
 body {
     font-family: 'Roboto Mono', monospace;
     /* The background image you requested */
-    background-image: url('https://images.unsplash.com/photo-1519677100203-a0e668c97d44?q=80&w=2070&auto=format&fit=crop');
+    background-image: url('/assests/background.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
