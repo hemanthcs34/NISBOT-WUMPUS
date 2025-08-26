@@ -1,12 +1,10 @@
-/* General Body and Font Styling */
 body {
     font-family: 'Roboto Mono', monospace;
-    /* The background image you requested */
     background-image: url('/assests/background.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    background-color: #1a1a1a; /* Fallback color */
+    background-color: #1a1a1a;
     color: #e0e0e0;
     display: flex;
     justify-content: center;
@@ -16,34 +14,34 @@ body {
     font-size: 16px;
 }
 
-/* Utility Class */
 .hidden {
     display: none !important;
 }
 
-/* Splash Screens & Modals */
 .splash-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(10, 20, 30, 0.90);
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     z-index: 100;
+    box-shadow: 0 0 40px 0 #000a;
 }
 
 .splash-content, .auth-content, .leaderboard-content, .instructions, header, footer {
-    /* Semi-transparent background for readability */
-    background: rgba(26, 26, 26, 0.85);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: linear-gradient(135deg, rgba(26,26,26,0.95) 60%, rgba(0,255,221,0.08) 100%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     padding: 40px;
-    border-radius: 10px;
-    border: 1px solid #444;
+    border-radius: 18px;
+    border: 1px solid #00ffdd;
+    box-shadow: 0 4px 24px 0 #00ffdd33;
+    transition: box-shadow 0.3s;
 }
 
 .splash-content, .auth-content, .leaderboard-content {
@@ -55,42 +53,46 @@ body {
     height: 150px;
     object-fit: cover;
     border-radius: 50%;
-    border: 3px solid #00ffdd;
+    border: 4px solid #00ffdd;
     margin-bottom: 20px;
+    box-shadow: 0 0 20px #00ffdd55;
 }
 
 h1, h2, h3 {
     color: #00ffdd;
+    text-shadow: 0 2px 8px #00ffdd33;
+    letter-spacing: 1px;
 }
 
 button, a.button {
-    background-color: #00ffdd;
+    background: linear-gradient(90deg, #00ffdd 0%, #00b39b 100%);
     color: #1a1a1a;
     border: none;
-    padding: 12px 25px;
+    padding: 14px 30px;
     font-family: 'Roboto Mono', monospace;
     font-size: 1em;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 8px;
     margin-top: 20px;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
     text-decoration: none;
     display: inline-block;
+    box-shadow: 0 2px 8px #00ffdd44;
 }
 
 button:hover, a.button:hover {
-    background-color: #00b39b;
-    transform: scale(1.05);
+    background: linear-gradient(90deg, #00b39b 0%, #00ffdd 100%);
+    transform: scale(1.07);
+    box-shadow: 0 4px 16px #00ffdd88;
 }
 
-/* Game Container and Layout */
 .game-container {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 20px;
-    padding: 20px;
+    gap: 28px;
+    padding: 32px;
     max-width: 1200px;
     width: 100%;
     justify-content: center;
@@ -99,75 +101,83 @@ button:hover, a.button:hover {
 header, footer {
     width: 100%;
     text-align: center;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px #00ffdd22;
 }
 
 .stats {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 36px;
     font-size: 1.2em;
 }
 
 main {
-    flex-basis: 620px; /* Accommodate 10x10 grid of 60px cells + padding */
+    flex-basis: 620px;
 }
 
-/* Game Board */
 #game-board {
     display: grid;
     grid-template-columns: repeat(10, 60px);
     grid-template-rows: repeat(10, 60px);
-    gap: 2px;
-    background-color: #111;
+    gap: 3px;
+    background: linear-gradient(135deg, #111 80%, #00ffdd22 100%);
     border: 2px solid #00ffdd;
-    padding: 5px;
+    padding: 8px;
+    border-radius: 14px;
+    box-shadow: 0 2px 16px #00ffdd22;
 }
 
 .cell {
     width: 60px;
     height: 60px;
-    background-color: #333;
+    background: linear-gradient(135deg, #333 70%, #00ffdd11 100%);
     font-size: 2em;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px #00ffdd22;
+    transition: background 0.2s;
 }
 
 .cell.visited {
-    background-color: #4d4d4d;
+    background: linear-gradient(135deg, #4d4d4d 80%, #00ffdd22 100%);
 }
 
 .cell.player-location {
-    background-color: #5f5f5f;
+    background: linear-gradient(135deg, #5f5f5f 80%, #00ffdd44 100%);
+    box-shadow: 0 0 12px #00ffdd99;
 }
 
 .sensory-cue {
     position: absolute;
-    bottom: 2px;
-    right: 2px;
-    font-size: 0.5em;
+    bottom: 4px;
+    right: 6px;
+    font-size: 0.7em;
+    color: #00ffdd;
+    text-shadow: 0 1px 4px #00ffdd44;
 }
 
-/* Instructions Side Panel */
 .instructions {
-    flex-basis: 300px;
-    padding: 20px;
-    border-radius: 8px;
+    flex-basis: 320px;
+    padding: 28px;
+    border-radius: 14px;
     align-self: flex-start;
+    box-shadow: 0 2px 12px #00ffdd22;
 }
 
 .leaderboard-content ol {
     list-style-type: decimal;
-    padding-left: 20px;
+    padding-left: 24px;
     text-align: left;
 }
 
 .leaderboard-content li {
-    padding: 8px 0;
-    border-bottom: 1px solid #444;
+    padding: 10px 0;
+    border-bottom: 1px solid #00ffdd44;
     font-size: 1.1em;
 }
 
@@ -176,29 +186,35 @@ main {
 }
 
 .auth-content input {
-    width: 80%;
-    padding: 12px;
+    width: 85%;
+    padding: 14px;
     margin-top: 20px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #555;
-    background: #333;
+    margin-bottom: 12px;
+    border-radius: 7px;
+    border: 1px solid #00ffdd88;
+    background: #222;
     color: #e0e0e0;
     font-family: 'Roboto Mono', monospace;
     font-size: 1.1em;
     text-align: center;
+    transition: border 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 6px #00ffdd22;
+}
+
+.auth-content input:focus {
+    border: 1.5px solid #00ffdd;
+    box-shadow: 0 0 8px #00ffdd88;
+    outline: none;
 }
 
 .auth-content button {
-    width: 85%;
+    width: 90%;
 }
 
-#auth-status {
+#auth-status, #submit-status {
     margin-top: 15px;
     height: 20px;
-}
-
-#submit-status {
-    margin-top: 15px;
-    height: 20px;
+    color: #00ffdd;
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
